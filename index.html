@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diabetes Prediction</title>
+</head>
+<body>
+    <h1>Diabetes Prediction</h1>
+    <form id="prediction-form">
+        <label for="bmi">BMI:</label>
+        <input type="text" id="bmi" name="bmi"><br><br>
+        <label for="hba1c">HbA1c:</label>
+        <input type="text" id="hba1c" name="hba1c"><br><br>
+        <label for="blood_glucose">Blood Glucose:</label>
+        <input type="text" id="blood_glucose" name="blood_glucose"><br><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    <h2>Prediction Results</h2>
+    <p id="results"></p>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var bmi = document.getElementById('bmi').value;
+            var hba1c = document.getElementById('hba1c').value;
+            var blood_glucose = document.getElementById('blood_glucose').value;
+            
+            var data = {
+                bmi: parseFloat(bmi),
+                hba1c: parseFloat(hba1c),
+                blood_glucose: parseFloat(blood_glucose)
+            };
+            
+            fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerText = 
+                    'Prediction: ' + data.tf_prediction + '\n';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
